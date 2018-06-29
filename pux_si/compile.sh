@@ -1,4 +1,6 @@
 #!/bin/bash
+
+echo "Compile the enviroment:"
 mkdir -p sim_bin
 
 rm ./sim_bin/clist

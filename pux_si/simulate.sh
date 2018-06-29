@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Running the simulation:"
 echo "PROJECT NAME IS ${PWD##*/}"
 
 if [ -x ./sim_bin/${PWD##*/} ]; then
