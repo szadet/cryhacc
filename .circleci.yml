@@ -6,9 +6,14 @@ machine:
     pre:
       - sudo apt-get update
       - sudo apt-get install iverilog
-  
-  deployment:
-    staging:
-      branch: master
+
+compile:
+  override:
+    - cd pux_si
+    - ./compile.sh pux_si_tb
+    
+test:
+  override:
+    -simulate
     
  
