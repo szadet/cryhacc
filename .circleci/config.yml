@@ -10,7 +10,9 @@ jobs:
   build:
     steps:
       - checkout
-      - run ./compile.sh pux_si_tb
-      - run ./simulate.sh
+      - run:
+          command: ./compile.sh pux_si_tb
+      - run
+          command: ./simulate.sh
     
  
