@@ -8,8 +8,9 @@
  */
 module pux_si 
 #(  
-  parameter OPCW = 8,
-  parameter DATAW = 16
+  parameter OPCW     = 8,
+  parameter DATAW    = 16,
+  parameter OPFIFOW  = 3    /* Size of the FIFO pointers */
 )(
   input            axis_clk,            /*< Module clock */
   input            axis_rstn,           /*< Module reset */
@@ -40,6 +41,12 @@ module pux_si
 /**
  * Stream signals definition
  * @author Tomasz Szade
+ */
+ wire [OPFIFOW:0] wptr_r;
+ wire [OPFIFOW:0] rptr_r;
+ 
+/**
+ * Signals
  */
 endmodule
 
