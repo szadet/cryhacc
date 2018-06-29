@@ -7,11 +7,10 @@ dependencies:
     
 jobs:
   working_directory: ~/pux_si
-
-  compile:  
+  build:
     ./compile.sh pux_si_tb
    
-  test:
-    ./simulate.sh
+test:
+  ./simulate.sh
     
  
