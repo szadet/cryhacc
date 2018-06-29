@@ -7,9 +7,8 @@ dependencies:
     
 jobs:
   build:
-   docker:
-     - image: circleci/node:7
-  
+    docker:
+      - image: circleci/node:7
     steps:
       - checkout
       - run:
