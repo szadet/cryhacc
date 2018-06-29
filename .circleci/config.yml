@@ -6,13 +6,14 @@ dependencies:
     - sudo apt-get iverilog
     
 jobs:
-  working_directory: ~/pux_si
   build:
     steps:
       - checkout
       - run:
+          working_directory: ~/pux_si
           command: ./compile.sh pux_si_tb
       - run:
+          working_directory: ~/pux_si
           command: ./simulate.sh
     
  
