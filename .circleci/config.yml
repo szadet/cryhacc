@@ -12,6 +12,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Iverilog
+          command: sudo apt-get update && sudo apt-get install iverilog   
+      - run:
           working_directory: ./pux_si
           command: ./compile.sh pux_si_tb
       - run:
