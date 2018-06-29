@@ -11,10 +11,13 @@ module pux_si
   parameter OPCW = 8,
   parameter DATAW = 16
 )(
+  input            axis_clk,            /*< Module clock */
+  input            axis_rstn,           /*< Module reset */
+
   input [OPCW-1:0] axis_opcode_data,    /*< Opcode data input*/
   input            axis_opcode_valid,   /*< Opcode valid */
   output           axis_opcode_ready,   /*< Opcode ready */
-  
+
   input [DATAW-1:0] axis_abuff_data,    /*< Buffer A data input*/
   input             axis_abuff_valid,   /*< Buffer A valid */
   output            axis_abuff_ready,   /*< Buffer A ready */

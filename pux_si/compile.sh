@@ -14,4 +14,4 @@ for f in ./sim/src/*.v; do
   echo "$f" >> ./sim_bin/clist
 done
 
-iverilog -o"./sim_bin/${PWD##*/}" -c"./sim_bin/clist" -s$1
+iverilog -o"./sim_bin/${PWD##*/}" -c"./sim_bin/clist" -s$1 -D__ICARUS__
