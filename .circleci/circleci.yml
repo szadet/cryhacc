@@ -1,16 +1,9 @@
-dependencies:
-  override:
-    - sudo apt-get update
-    - sudo apt-get install iverilog
-
+version: 0
 jobs:
-  compile:
-    override:
-      - cd pux_si
-      - ./compile.sh pux_si_tb
-    
-  test:
-    override:
-      - ./simulate.sh
+  build:
+    working_directory: ./pux_si
+  steps:
+    ./simulate.sh
+    ./compile.sh pux_si_tb
     
  
