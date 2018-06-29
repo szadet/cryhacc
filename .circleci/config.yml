@@ -8,9 +8,9 @@ dependencies:
 jobs:
   working_directory: ~/pux_si
   build:
-    ./compile.sh pux_si_tb
-   
-test:
-  ./simulate.sh
+    steps:
+      - checkout
+      - ./compile.sh pux_si_tb
+      - ./simulate.sh
     
  
