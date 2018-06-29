@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           command: ./compile.sh pux_si_tb
-      - run
+      - run:
           command: ./simulate.sh
     
  
