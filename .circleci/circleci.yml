@@ -1,19 +1,16 @@
-machine:
-  hosts:
-    circlehost: 127.0.0.1
-
 dependencies:
   override:
     - sudo apt-get update
     - sudo apt-get install iverilog
 
-compile:
-  override:
-    - cd pux_si
-    - ./compile.sh pux_si_tb
+jobs:
+  compile:
+    override:
+      - cd pux_si
+      - ./compile.sh pux_si_tb
     
-test:
-  override:
-    - ./simulate.sh
+  test:
+    override:
+      - ./simulate.sh
     
  
