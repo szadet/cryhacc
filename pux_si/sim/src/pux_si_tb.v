@@ -18,35 +18,54 @@ module pux_si_tb;
   localparam OPCW       = 8;
   localparam DATAW      = 16; 
   localparam CLK_PREIOD = 5;
+  localparam STATUSW    = 2;
+  
   
   `define TIMEOUT 200
   
 /**
  * Signals
  */
-  reg              axis_clk;          /*< Main clock */
-  reg              axis_rstn;         /*< Reset */
-  reg[OPCW-1:0]    axis_opcode_data;  /*< Opcode data input*/    
-  reg              axis_opcode_valid; /*< Opcode valid */        
-  wire             axis_opcode_ready; /*< Opcode ready */          
-  reg [DATAW-1:0]  axis_abuff_data;   /*< Buffer A data input*/  
-  reg              axis_abuff_valid;  /*< Buffer A valid */      
-  wire             axis_abuff_ready;  /*< Buffer A ready */        
-  reg [DATAW-1:0]  axis_bbuff_data;   /*< Buffer B data input*/  
-  reg              axis_bbuff_valid;  /*< Buffer B valid */      
-  wire             axis_bbuff_ready;  /*< Buffer B ready */        
-  reg [DATAW-1:0]  axis_mbuff_data;   /*< Buffer M data input*/  
-  reg              axis_mbuff_valid;  /*< Buffer M valid */      
-  wire             axis_mbuff_ready;  /*< Buffer M ready */         
-  reg              axis_status_ready; /*< Status ready */        
-  wire [DATAW-1:0] axis_status_data;  /*< Status data input*/    
-  wire             axis_status_valid; /*< Status valid */                                                                      
-  reg              stream_reqest;     /*< Request stream fetch */
+  reg                 axis_clk;          /*< Main clock */
+  reg                 axis_rstn;         /*< Reset */
+  reg[OPCW-1:0]       axis_opcode_data;  /*< Opcode data input*/    
+  reg                 axis_opcode_valid; /*< Opcode valid */        
+  wire                axis_opcode_ready; /*< Opcode ready */          
+  reg [DATAW-1:0]     axis_abuff_data;   /*< Buffer A data input*/  
+  reg                 axis_abuff_valid;  /*< Buffer A valid */      
+  wire                axis_abuff_ready;  /*< Buffer A ready */        
+  reg [DATAW-1:0]     axis_bbuff_data;   /*< Buffer B data input*/  
+  reg                 axis_bbuff_valid;  /*< Buffer B valid */      
+  wire                axis_bbuff_ready;  /*< Buffer B ready */        
+  reg [DATAW-1:0]     axis_mbuff_data;   /*< Buffer M data input*/  
+  reg                 axis_mbuff_valid;  /*< Buffer M valid */      
+  wire                axis_mbuff_ready;  /*< Buffer M ready */         
+  reg                 axis_status_ready; /*< Status ready */        
+  wire [STATUSW-1:0]  axis_status_data;  /*< Status data input*/    
+  wire                axis_status_valid; /*< Status valid */                                                                      
+  reg                 stream_reqest;     /*< Request stream fetch */
   
   integer timeoutcnt;
   
 /**
  * Tasks
+ */
+/**
+ * Terminate the simulation with the given exit code
+ */
+task FINISH;
+  input integer EXIT_CODE;
+begin
+`ifdef __ICARUS__
+    $finish_and_return(EXIT_CODE);
+`else
+    $finish(EXIT_CODE);
+`endif
+end
+endtask
+
+/**
+ * Sending one opcode request
  */
 task SEND_OPCODE;
   input [OPCW-1:0] OPCODE;
@@ -61,6 +80,23 @@ begin
   @(posedge axis_clk)
   axis_opcode_valid = 1'b0;  
 end
+endtask
+
+/**
+ * Waiting For Expected Status
+ */
+task WAIT_FOR_STATUS;
+  input [STATUSW-1:0] EXPECETD_STATUS;
+  
+  @(posedge axis_status_valid)
+  @(negedge axis_clk)
+  
+  if (EXPECETD_STATUS === axis_status_data) begin
+    $display("ERROR: [time %0d ns] Expected status 0x%0h, received 0x%0h.",$time,EXPECETD_STATUS,axis_status_data);
+  end else begin
+    $display("ERROR: [time %0d ns] Expected status 0x%0h, received 0x%0h.",$time,EXPECETD_STATUS,axis_status_data);
+    $display("ERROR: [time %0d ns] Test failed by reference comparison.",$time);
+  end
 endtask
   
 
@@ -103,6 +139,8 @@ pux_si #(
   .OPCW  (OPCW),
   .DATAW (DATAW)
 ) u_pux_si (
+   .axis_clk          (axis_clk),
+   .axis_rstn         (axis_rstn),
    .axis_opcode_data  (axis_opcode_data),  /*< Opcode data input*/
    .axis_opcode_valid (axis_opcode_valid), /*< Opcode valid */
    .axis_opcode_ready (axis_opcode_ready), /*< Opcode ready */
@@ -123,14 +161,19 @@ pux_si #(
  
  initial
  begin
+   axis_opcode_valid = 1'b0;
+   axis_status_ready = 1'b0;
+   
    $dumpfile("sim_bin/test.vcd");
    $dumpvars(0,pux_si_tb);   
    
    @(posedge axis_rstn)
    #20 
    SEND_OPCODE(23);
+   WAIT_FOR_STATUS(23);
+   //SEND_OPCODE(13);
    
-   $display("INFO: [time %0d ns] Test passed.");
+   $display("INFO: [time %0d ns] Test passed.",$time);
 `ifdef __ICARUS__
   $finish_and_return(0);
 `else
@@ -151,7 +194,7 @@ begin
     timeoutcnt = timeoutcnt + 1;
   end
 
-  $display("INFO: [time %0d ns] Test failed by timeout.",$time);
+  $display("ERROR: [time %0d ns] Test failed by timeout.",$time);
 `ifdef __ICARUS__
     $finish_and_return(3);
 `else
