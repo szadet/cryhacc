@@ -3,7 +3,7 @@ machine:
     circlehost: 127.0.0.1
 
 dependencies:
-  pre:
+  override:
     - sudo apt-get update
     - sudo apt-get install iverilog
 
