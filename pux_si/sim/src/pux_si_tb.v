@@ -1,0 +1,67 @@
+/****************************************************************************
+ * pux_si_tb.v
+ ****************************************************************************/
+
+//`include "tasks_pix_si.v"
+
+/**
+ * Module: pux_si_tb
+ * 
+ * TODO: Add module documentation
+ */
+module pux_si_tb;
+
+/**
+ * Parameters configuration 
+ */
+  localparam OPCW  = 8;
+  localparam DATAW = 16; 
+  
+  
+/**
+ * Signals
+ */
+  reg[OPCW-1:0]    axis_opcode_data;  /*< Opcode data input*/    
+  reg              axis_opcode_valid; /*< Opcode valid */        
+  wire             axis_opcode_ready; /*< Opcode ready */          
+  reg [DATAW-1:0]  axis_abuff_data;   /*< Buffer A data input*/  
+  reg              axis_abuff_valid;  /*< Buffer A valid */      
+  wire             axis_abuff_ready;  /*< Buffer A ready */        
+  reg [DATAW-1:0]  axis_bbuff_data;   /*< Buffer B data input*/  
+  reg              axis_bbuff_valid;  /*< Buffer B valid */      
+  wire             axis_bbuff_ready;  /*< Buffer B ready */        
+  reg [DATAW-1:0]  axis_mbuff_data;   /*< Buffer M data input*/  
+  reg              axis_mbuff_valid;  /*< Buffer M valid */      
+  wire             axis_mbuff_ready;  /*< Buffer M ready */         
+  reg              axis_status_ready; /*< Status ready */        
+  wire [DATAW-1:0] axis_status_data;  /*< Status data input*/    
+  wire             axis_status_valid; /*< Status valid */                                                                      
+  reg              stream_reqest;     /*< Request stream fetch */
+
+
+/**       
+ * Instantation
+ */       
+pux_si #(
+  .OPCW  (OPCW),
+  .DATAW (DATAW)
+ ) u_pux_si (
+   .axis_opcode_data  (axis_opcode_data),  /*< Opcode data input*/
+   .axis_opcode_valid (axis_opcode_valid), /*< Opcode valid */
+   .axis_opcode_ready (axis_opcode_ready), /*< Opcode ready */
+   .axis_abuff_data   (axis_abuff_data),   /*< Buffer A data input*/
+   .axis_abuff_valid  (axis_abuff_valid),  /*< Buffer A valid */
+   .axis_abuff_ready  (axis_abuff_ready),  /*< Buffer A ready */
+   .axis_bbuff_data   (axis_bbuff_data ),  /*< Buffer B data input*/
+   .axis_bbuff_valid  (axis_bbuff_valid),  /*< Buffer B valid */
+   .axis_bbuff_ready  (axis_bbuff_ready),  /*< Buffer B ready */
+   .axis_mbuff_data   (axis_mbuff_data ),  /*< Buffer M data input*/
+   .axis_mbuff_valid  (axis_mbuff_valid),  /*< Buffer M valid */
+   .axis_mbuff_ready  (axis_mbuff_ready),  /*< Buffer M ready */  
+   .axis_status_ready (axis_status_ready), /*< Status ready */
+   .axis_status_data  (axis_status_data),  /*< Status data input*/
+   .axis_status_valid (axis_status_valid), /*< Status valid */    
+   .stream_reqest     (stream_request)     /*< Request stream fetch */ 
+ );
+
+endmodule
