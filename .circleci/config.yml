@@ -1,9 +1,15 @@
-version: 0
-jobs:
-  build:
-    working_directory: ./pux_si
-  steps:
-    ./simulate.sh
-    ./compile.sh pux_si_tb
+general:
+  build_dir: pux_si
+  
+dependencies:
+  pre:
+    - sudo apt-get update
+    - sudo apt-get iverilog
+  
+compile:  
+  ./compile.sh pux_si_tb
+   
+test:
+  ./simulate.sh
     
  
