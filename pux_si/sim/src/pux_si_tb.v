@@ -185,9 +185,9 @@ end
 initial
 begin
   @(posedge axis_rstn)
+  WAIT_FOR_STATUS(1);
   WAIT_FOR_STATUS(0);
-  WAIT_FOR_STATUS(0);
-  WAIT_FOR_STATUS(0);
+  WAIT_FOR_STATUS(1);
   WAIT_FOR_STATUS(0);
   WAIT_FOR_STATUS(0);
   WAIT_FOR_STATUS(0);
