@@ -73,6 +73,7 @@ begin
   @(posedge axis_clk)
   $display("INFO: [time %0d ns] PUX_SI: SEND OPCODE %0h",$time,OPCODE);
   axis_opcode_valid = 1'b1;
+  axis_opcode_data = OPCODE;
   #1 //switching delta
 
   wait (axis_opcode_ready === 1'b1);
@@ -92,10 +93,11 @@ task WAIT_FOR_STATUS;
   @(negedge axis_clk)
   
   if (EXPECETD_STATUS === axis_status_data) begin
-    $display("ERROR: [time %0d ns] Expected status 0x%0h, received 0x%0h.",$time,EXPECETD_STATUS,axis_status_data);
+    $display("INFO: [time %0d ns] Proper status received",$time);
   end else begin
     $display("ERROR: [time %0d ns] Expected status 0x%0h, received 0x%0h.",$time,EXPECETD_STATUS,axis_status_data);
     $display("ERROR: [time %0d ns] Test failed by reference comparison.",$time);
+    FINISH(2);
   end
 endtask
   
@@ -123,13 +125,13 @@ end
  */
 initial
 begin
-  axis_rstn = 1'b0;
-  
-  @(posedge axis_clk)
   axis_rstn = 1'b1;
   
   @(posedge axis_clk)
   axis_rstn = 1'b0;
+  
+  @(posedge axis_clk)
+  axis_rstn = 1'b1;
 end  
 
 /**
@@ -170,16 +172,26 @@ pux_si #(
    @(posedge axis_rstn)
    #20 
    SEND_OPCODE(23);
-   WAIT_FOR_STATUS(23);
-   //SEND_OPCODE(13);
+   SEND_OPCODE(02);
+   SEND_OPCODE(31);
+   SEND_OPCODE(17);
+   SEND_OPCODE(12);
+   SEND_OPCODE(01);
    
    $display("INFO: [time %0d ns] Test passed.",$time);
-`ifdef __ICARUS__
-  $finish_and_return(0);
-`else
-  $finish(0);
-`endif    
- end
+   FINISH(0);
+end
+
+initial
+begin
+  @(posedge axis_rstn)
+  WAIT_FOR_STATUS(0);
+  WAIT_FOR_STATUS(0);
+  WAIT_FOR_STATUS(0);
+  WAIT_FOR_STATUS(0);
+  WAIT_FOR_STATUS(0);
+  WAIT_FOR_STATUS(0);
+end
  
  /**
   * Timeout
@@ -195,11 +207,7 @@ begin
   end
 
   $display("ERROR: [time %0d ns] Test failed by timeout.",$time);
-`ifdef __ICARUS__
-    $finish_and_return(3);
-`else
-    $finish(3);
-`endif
+  FINISH(3);
 end
 
 endmodule
